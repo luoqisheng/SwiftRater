@@ -72,6 +72,12 @@ import StoreKit
   
   @objc public static var useStoreKitIfAvailable: Bool = true
   
+  @objc public enum RateAction: Int {
+      case done
+      case later
+  }
+  @objc public static var showRateView: (() -> RateAction)?
+  
   @objc public static var showLaterButton: Bool = true
   
   @objc public static var countryCode: String?
@@ -331,17 +337,17 @@ import StoreKit
   
 #if os(iOS)
   private func showRatingAlert(host: UIViewController?, force: Bool) {
-    NSLog("[SwiftRater] Trying to show review request dialog.")
-    if #available(iOS 10.3, *), SwiftRater.useStoreKitIfAvailable, !force {
-        if #available(iOS 14.0, *) {
-            guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene else { return }
-            SKStoreReviewController.requestReview(in: windowScene)
-        } else {
-            // Fallback on earlier versions
-            SKStoreReviewController.requestReview()
-        }
-        UsageDataManager.shared.isRateDone = true
-    } else {
+      NSLog("[SwiftRater] Trying to show review request dialog.")
+      if let showRateView = SwiftRater.showRateView {
+          let action = showRateView()
+          switch action {
+          case .done:
+              UsageDataManager.shared.isRateDone = true
+          case .later:
+              UsageDataManager.shared.saveReminderRequestDate()
+          }
+          return
+      }
       let alertController = UIAlertController(title: titleText, message: messageText, preferredStyle: .alert)
       
       let rateAction = UIAlertAction(title: rateText, style: .default, handler: {
@@ -368,7 +374,6 @@ import StoreKit
       }
       
       host?.present(alertController, animated: true, completion: nil)
-    }
   }
   
   private func rateAppWithAppStore() {
