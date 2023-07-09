@@ -26,7 +26,7 @@ SwiftRater is a class that you can drop into any iPhone app that will help remin
   # s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author           = { 'takecian' => 'takecian@gmail.com' }
-  s.source           = { :git => 'https://github.com/takecian/SwiftRater.git', :tag => s.version.to_s }
+  s.source           = { :git => 'https://github.com/luoqisheng/SwiftRater.git', :tag => s.version.to_s }
   s.social_media_url = 'https://twitter.com/takecian'
   s.swift_versions    = ['5.0', '5.1']
 

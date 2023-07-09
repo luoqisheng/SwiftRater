@@ -333,8 +333,14 @@ import StoreKit
   private func showRatingAlert(host: UIViewController?, force: Bool) {
     NSLog("[SwiftRater] Trying to show review request dialog.")
     if #available(iOS 10.3, *), SwiftRater.useStoreKitIfAvailable, !force {
-      SKStoreReviewController.requestReview()
-      UsageDataManager.shared.isRateDone = true
+        if #available(iOS 14.0, *) {
+            guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene else { return }
+            SKStoreReviewController.requestReview(in: windowScene)
+        } else {
+            // Fallback on earlier versions
+            SKStoreReviewController.requestReview()
+        }
+        UsageDataManager.shared.isRateDone = true
     } else {
       let alertController = UIAlertController(title: titleText, message: messageText, preferredStyle: .alert)
       
