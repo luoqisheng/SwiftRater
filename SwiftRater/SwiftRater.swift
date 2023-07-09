@@ -76,7 +76,7 @@ import StoreKit
       case done
       case later
   }
-  @objc public static var showRateView: (() -> RateAction)?
+  @objc public static var showRateView: ((((RateAction) -> Void)) -> Void)?
   
   @objc public static var showLaterButton: Bool = true
   
@@ -339,13 +339,14 @@ import StoreKit
   private func showRatingAlert(host: UIViewController?, force: Bool) {
       NSLog("[SwiftRater] Trying to show review request dialog.")
       if let showRateView = SwiftRater.showRateView {
-          let action = showRateView()
-          switch action {
-          case .done:
-              UsageDataManager.shared.isRateDone = true
-          case .later:
-              UsageDataManager.shared.saveReminderRequestDate()
-          }
+          showRateView({ action in
+              switch action {
+              case .done:
+                  UsageDataManager.shared.isRateDone = true
+              case .later:
+                  UsageDataManager.shared.saveReminderRequestDate()
+              }
+          })
           return
       }
       let alertController = UIAlertController(title: titleText, message: messageText, preferredStyle: .alert)
