@@ -76,7 +76,7 @@ import StoreKit
       case done
       case later
   }
-  @objc public static var showRateView: ((((RateAction) -> Void)) -> Void)?
+  @objc public static var showRateView: ((((RateAction) -> Void)?) -> Void)?
   
   @objc public static var showLaterButton: Bool = true
   
